@@ -28,7 +28,7 @@ public class ProfileController {
     private final DeleteProfileServiceImpl deleteProfileService;
 
     @PostMapping
-    public ResponseEntity<ProfileResponseDto> createProfile(@RequestBody CreateProfileRequest request) {
+    public ResponseEntity<?> createProfile(@RequestBody CreateProfileRequest request) {
         return createProfileService.createProfile(request);
     }
 

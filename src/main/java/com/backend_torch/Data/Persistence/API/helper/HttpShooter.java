@@ -47,7 +47,7 @@ public class HttpShooter {
                 ))
 
                 // Timeout
-                .timeout(Duration.ofSeconds(10))
+                .timeout(Duration.ofSeconds(30))
                 .doOnSubscribe(sub -> System.out.println("Calling " + externalApiName + " -> " + uri))
                 .doOnSuccess(res -> System.out.println(externalApiName + " SUCCESS"))
                 .doOnError(err -> System.out.println(externalApiName + " ERROR: " + err.getMessage()))

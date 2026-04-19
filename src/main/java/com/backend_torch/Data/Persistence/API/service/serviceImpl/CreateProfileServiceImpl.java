@@ -27,7 +27,7 @@ public class CreateProfileServiceImpl implements CreateProfileService {
     private final AppProperties appProperties;
 
     @Override
-    public ResponseEntity<ProfileResponseDto> createProfile(CreateProfileRequest request) {
+    public ResponseEntity<?> createProfile(CreateProfileRequest request) {
 
         // 1. Validate input
         if (request.getName() == null || request.getName().trim().isEmpty()) {
@@ -156,12 +156,12 @@ public class CreateProfileServiceImpl implements CreateProfileService {
                         .build())
                 .build();
     }
-    private ProfileResponseDto mapIdempotencyResponse(Profiles p) {
+    private IdempotencyResponseDto mapIdempotencyResponse(Profiles p) {
         System.out.println("mapped response");
-        return ProfileResponseDto.builder()
+        return IdempotencyResponseDto.builder()
                 .status("success")
                 .message("Profile already exists")
-                .data(ProfileResponseDto.Data.builder()
+                .data(IdempotencyResponseDto.Data.builder()
                         .id(p.getId())
                         .name(p.getName())
                         .gender(p.getGender())

@@ -13,7 +13,6 @@ import java.util.UUID;
 @Builder
 public class ProfileResponseDto {
     private String status;
-    private String message;
     private Data data;
 
     @Getter
