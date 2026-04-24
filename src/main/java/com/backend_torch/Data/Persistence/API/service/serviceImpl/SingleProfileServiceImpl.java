@@ -39,7 +39,6 @@ public class SingleProfileServiceImpl implements SingleProfileService {
                         .ageGroup(profile.getAgeGroup())
                         .countryId(profile.getCountryId())
                         .countryProbability(profile.getCountryProbability())
-                        .sampleSize(profile.getSampleSize())
                         .createdAt(profile.getCreatedAt())
                         .build())
                 .build();

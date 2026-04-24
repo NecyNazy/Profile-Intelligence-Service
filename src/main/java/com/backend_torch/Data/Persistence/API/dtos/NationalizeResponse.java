@@ -23,6 +23,7 @@ public class NationalizeResponse {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Country{
         private String country_id;
-        private Double probability;
+        private Float country_probability;
+        private String country_name;
     }
 }

@@ -17,7 +17,7 @@ public class AggregatedResponse {
     private String name;
 
     private String gender;
-    private Double probability;
+    private Float probability;
 
     private Long count;
 
@@ -25,6 +25,7 @@ public class AggregatedResponse {
     private String ageGroup;
 
     private String countryId;
+    private String countryName;
 
     /**
      * Aggregation constructor
@@ -44,15 +45,16 @@ public class AggregatedResponse {
         this.age = ageRes.getAge();
         this.ageGroup = mapAgeToGroup(ageRes.getAge());
 
-        // Country (pick highest probability)
+        // Country (pick the highest probability)
         if (countryRes.getCountry() != null && !countryRes.getCountry().isEmpty()) {
             NationalizeResponse.Country topCountry = countryRes.getCountry()
                     .stream()
-                    .max(Comparator.comparing(NationalizeResponse.Country::getProbability))
+                    .max(Comparator.comparing(NationalizeResponse.Country::getCountry_probability))
                     .orElse(null);
 
             this.countryId = topCountry.getCountry_id();
-            this.probability = topCountry.getProbability();
+            this.probability = topCountry.getCountry_probability();
+            this.countryName = topCountry.getCountry_name();
         }
     }
 

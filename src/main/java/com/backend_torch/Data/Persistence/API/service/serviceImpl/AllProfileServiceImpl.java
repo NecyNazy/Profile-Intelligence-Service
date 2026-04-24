@@ -6,65 +6,90 @@ import com.backend_torch.Data.Persistence.API.repository.ProfileRepository;
 import com.backend_torch.Data.Persistence.API.service.contracts.AllProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+// AllProfileServiceImpl.java
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class AllProfileServiceImpl implements AllProfileService {
+
     private final ProfileRepository profileRepository;
 
     @Override
-    public ResponseEntity<AllProfileResponseDto> getProfiles(String gender, String countryId, String ageGroup) {
-        // 1. Fetch all profiles
-        List<Profiles> allProfiles = profileRepository.findAll();
-        log.info("Total records in DB: {}", allProfiles.size());
+    public ResponseEntity<AllProfileResponseDto> getProfiles(
+            String gender, String ageGroup, String countryId,
+            Integer minAge, Integer maxAge,
+            Double minGenderProbability, Double minCountryProbability,
+            String sortBy, String order,
+            int page, int limit) {
 
-//        // 2. Apply optional filters (Fixed to handle empty strings from Postman)
-//        List<Profiles> filtered = allProfiles.stream()
-//                .filter(p -> isNullOrBlank(gender) || (p.getGender() != null && p.getGender().equalsIgnoreCase(gender.trim())))
-//                .filter(p -> isNullOrBlank(countryId) || (p.getCountryId() != null && p.getCountryId().equalsIgnoreCase(countryId.trim())))
-//                .filter(p -> isNullOrBlank(ageGroup) || (p.getAgeGroup() != null && p.getAgeGroup().equalsIgnoreCase(ageGroup.trim())))
-//                .toList();
-        // 2. Apply optional filters
-        List<Profiles> filtered = allProfiles.stream()
-                .filter(p -> gender == null || gender.isBlank() || p.getGender().equalsIgnoreCase(gender.trim()))
-                .filter(p -> countryId == null || countryId.isBlank() || p.getCountryId().equalsIgnoreCase(countryId.trim()))
-                .filter(p -> ageGroup == null || ageGroup.isBlank() || p.getAgeGroup().equalsIgnoreCase(ageGroup.trim()))
+        // Validate sort fields
+        List<String> validSortFields = List.of("age", "created_at", "gender_probability");
+        if (sortBy != null && !validSortFields.contains(sortBy)) {
+            return ResponseEntity.status(422).body(
+                    AllProfileResponseDto.builder()
+                            .status("error")
+                            .build()
+            );
+        }
+
+        // Enforce limit max
+        int safeLimit = Math.min(limit, 50);
+        int safePage = Math.max(page, 1);
+
+        // Build sort
+        String sortField = switch (sortBy != null ? sortBy : "created_at") {
+            case "age" -> "age";
+            case "gender_probability" -> "genderProbability";
+            default -> "createdAt";
+        };
+
+        Sort.Direction direction = "asc".equalsIgnoreCase(order)
+                ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(safePage - 1, safeLimit,
+                Sort.by(direction, sortField));
+
+        Page<Profiles> result = profileRepository.findWithFilters(
+                gender, ageGroup, countryId,
+                minAge, maxAge,
+                minGenderProbability, minCountryProbability,
+                pageable
+        );
+
+        List<AllProfileResponseDto.Data> dataList = result.getContent().stream()
+                .map(this::mapToData)
                 .toList();
 
-        log.info("Filtered records count: {}", filtered.size());
-
-        // 3. Map to DTO List (Ensuring UUID is converted to String for standard JSON)
-        List<AllProfileResponseDto.Data> dataList = filtered.stream()
-                .map(p -> AllProfileResponseDto.Data.builder()
-                        .id(p.getId()) // Ensure your DTO field is UUID or String
-                        .name(p.getName())
-                        .gender(p.getGender())
-                        .age(p.getAge())
-                        .ageGroup(p.getAgeGroup())
-                        .countryId(p.getCountryId())
-                        .build())
-                .collect(Collectors.toList());
-
-        // 4. Build Response (REMOVED the hardcoded data.get(1) index which caused errors)
-        AllProfileResponseDto response = AllProfileResponseDto.builder()
+        return ResponseEntity.ok(AllProfileResponseDto.builder()
                 .status("success")
-                .count(dataList.size())
-                .data(dataList) // Passing the whole list correctly
-                .build();
-        System.out.println("response: " + response);
-
-        return ResponseEntity.ok(response);
+                .page(safePage)
+                .limit(safeLimit)
+                .total(result.getTotalElements())
+                .data(dataList)
+                .build());
     }
 
-//    // Helper to prevent the "Empty String" filter trap
-//    private boolean isNullOrBlank(String str) {
-//        return str == null || str.trim().isEmpty();
-//    }
+    private AllProfileResponseDto.Data mapToData(Profiles p) {
+        return AllProfileResponseDto.Data.builder()
+                .id(p.getId())
+                .name(p.getName())
+                .gender(p.getGender())
+                .genderProbability(p.getGenderProbability())
+                .age(p.getAge())
+                .ageGroup(p.getAgeGroup())
+                .countryId(p.getCountryId())
+                .countryName(p.getCountryName())
+                .countryProbability(p.getCountryProbability())
+                .createdAt(p.getCreatedAt())
+                .build();
+    }
 }

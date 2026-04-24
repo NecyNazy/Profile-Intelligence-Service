@@ -1,5 +1,6 @@
 package com.backend_torch.Data.Persistence.API.model;
 
+import com.backend_torch.Data.Persistence.API.helper.UUIDHelper;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,9 +41,7 @@ public class Profiles {
     private String gender;
 
     @Column(name = "gender_probability")
-    private Double genderProbability;
-    @Column(name = "sample_size")
-    private Long sampleSize;
+    private Float genderProbability;
 
     @Column(name = "age")
     private Integer age;
@@ -54,7 +53,10 @@ public class Profiles {
     private String countryId;
 
     @Column(name = "country_probability")
-    private Double countryProbability;
+    private Float countryProbability;
+
+    @Column(name="country_name")
+    private String countryName;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -63,6 +65,9 @@ public class Profiles {
     protected void onCreate() {
         if (this.createdAt == null) {
             this.createdAt = Instant.now(); // UTC
+        }
+        if (this.id == null) {
+            this.id = UUIDHelper.generateUUID();
         }
     }
 }

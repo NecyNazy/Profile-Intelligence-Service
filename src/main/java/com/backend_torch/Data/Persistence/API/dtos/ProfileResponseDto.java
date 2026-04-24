@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class ProfileResponseDto {
     private String status;
@@ -22,12 +22,12 @@ public class ProfileResponseDto {
         private UUID id;
         private String name;
         private String gender;
-        private Double genderProbability;
-        private Long sampleSize;
+        private Float genderProbability;
         private Integer age;
         private String ageGroup;
         private String countryId;
-        private Double countryProbability;
+        private Float countryProbability;
+        private String countryName;
         private Instant createdAt;
 
     }

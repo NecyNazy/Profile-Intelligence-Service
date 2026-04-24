@@ -24,12 +24,12 @@ public class IdempotencyResponseDto {
             private UUID id;
             private String name;
             private String gender;
-            private Double genderProbability;
-            private Long sampleSize;
+            private Float genderProbability;
             private Integer age;
             private String ageGroup;
             private String countryId;
-            private Double countryProbability;
+            private Float countryProbability;
+            private String countryName;
             private Instant createdAt;
     }
 }

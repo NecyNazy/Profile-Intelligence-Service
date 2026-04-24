@@ -3,7 +3,6 @@ package com.backend_torch.Data.Persistence.API.service.serviceImpl;
 import com.backend_torch.Data.Persistence.API.dtos.*;
 import com.backend_torch.Data.Persistence.API.exception.ApiException;
 import com.backend_torch.Data.Persistence.API.helper.HttpShooter;
-import com.backend_torch.Data.Persistence.API.helper.UUIDHelper;
 import com.backend_torch.Data.Persistence.API.model.Profiles;
 import com.backend_torch.Data.Persistence.API.repository.ProfileRepository;
 import com.backend_torch.Data.Persistence.API.service.contracts.CreateProfileService;
@@ -36,22 +35,7 @@ public class CreateProfileServiceImpl implements CreateProfileService {
 
         if (!request.getName().matches("^[a-zA-Z ]+$")|| request.getName().trim().length() < 2) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).build();
-//                    ProfileResponseDto.builder()
-//                            .status("success")
-//                            .data(ProfileResponseDto.Data.builder()
-//                                    .id(null)
-//                                    .name(request.getName())
-//                                    .gender(null)
-//                                    .genderProbability(0.0)
-//                                    .sampleSize(0L)
-//                                    .age(null)
-//                                    .ageGroup(null)
-//                                    .countryId(null)
-//                                    .countryProbability(0.0)
-//                                    .createdAt(Instant.now())
-//                                    .build())
-//                            .build()
-//            );
+
         }
 
         String name = request.getName().trim().toLowerCase();
@@ -68,15 +52,14 @@ public class CreateProfileServiceImpl implements CreateProfileService {
 
         // 4. Persist entity
         Profiles profile = Profiles.builder()
-                .id(UUIDHelper.generateUUID())
                 .name(data.getName())
                 .gender(data.getGender())
                 .genderProbability(data.getProbability())
-                .sampleSize(data.getCount())
                 .age(data.getAge())
                 .ageGroup(data.getAgeGroup())
                 .countryId(data.getCountryId())
                 .countryProbability(data.getProbability())
+                .countryName(data.getCountryName())
                 .createdAt(Instant.now())
                 .build();
         System.out.println("profile built");
@@ -147,11 +130,11 @@ public class CreateProfileServiceImpl implements CreateProfileService {
                         .name(p.getName())
                         .gender(p.getGender())
                         .genderProbability(p.getGenderProbability())
-                        .sampleSize(p.getSampleSize())
                         .age(p.getAge())
                         .ageGroup(p.getAgeGroup())
                         .countryId(p.getCountryId())
                         .countryProbability(p.getCountryProbability())
+                        .countryName(p.getCountryName())
                         .createdAt(p.getCreatedAt())
                         .build())
                 .build();
@@ -166,11 +149,11 @@ public class CreateProfileServiceImpl implements CreateProfileService {
                         .name(p.getName())
                         .gender(p.getGender())
                         .genderProbability(p.getGenderProbability())
-                        .sampleSize(p.getSampleSize())
                         .age(p.getAge())
                         .ageGroup(p.getAgeGroup())
                         .countryId(p.getCountryId())
                         .countryProbability(p.getCountryProbability())
+                        .countryName(p.getCountryName())
                         .createdAt(p.getCreatedAt())
                         .build())
                 .build();
