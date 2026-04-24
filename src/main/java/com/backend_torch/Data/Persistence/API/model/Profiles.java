@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ public class Profiles {
     private String gender;
 
     @Column(name = "gender_probability")
-    private Float genderProbability;
+    private BigDecimal genderProbability;
 
     @Column(name = "age")
     private Integer age;
@@ -53,7 +54,7 @@ public class Profiles {
     private String countryId;
 
     @Column(name = "country_probability")
-    private Float countryProbability;
+    private BigDecimal countryProbability;
 
     @Column(name="country_name")
     private String countryName;
