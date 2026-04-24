@@ -17,7 +17,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/profiles")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProfileController {
     private final CreateProfileServiceImpl createProfileService;
     private final SingleProfileServiceImpl singleProfileService;
