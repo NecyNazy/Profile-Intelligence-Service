@@ -2,10 +2,7 @@ package com.backend_torch.Data.Persistence.API.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.List;
@@ -13,6 +10,7 @@ import java.util.UUID;
 
 // AllProfileResponseDto.java
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +24,7 @@ public class AllProfileResponseDto {
     private List<Data> data;
 
     @Getter
+    @Setter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
