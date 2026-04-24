@@ -5,6 +5,7 @@ import com.backend_torch.Data.Persistence.API.dtos.ProfileResponse2Dto;
 import com.backend_torch.Data.Persistence.API.dtos.CreateProfileRequest;
 import com.backend_torch.Data.Persistence.API.dtos.ProfileResponseDto;
 import com.backend_torch.Data.Persistence.API.helper.NaturalLanguageQueryParser;
+import com.backend_torch.Data.Persistence.API.service.contracts.AllProfileService;
 import com.backend_torch.Data.Persistence.API.service.serviceImpl.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,16 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
 @RestController
 @RequestMapping("/api/profiles")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProfileController {
-    private final CreateProfileServiceImpl createProfileService;
-    private final SingleProfileServiceImpl singleProfileService;
-    private final ProfileService2Impl allProfileService;
-    private final DeleteProfileServiceImpl deleteProfileService;
-    private final AllProfileServiceImpl allProfileServiceImpl;
+
+    private final AllProfileService allProfileService;  // inject interface, not impl
     private final NaturalLanguageQueryParser nlqParser;
 
     // GET /api/profiles
@@ -41,7 +40,7 @@ public class ProfileController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit) {
 
-        return allProfileServiceImpl.getProfiles(
+        return allProfileService.getProfiles(
                 gender, ageGroup, countryId,
                 minAge, maxAge,
                 minGenderProbability, minCountryProbability,
@@ -59,7 +58,7 @@ public class ProfileController {
 
         if (q == null || q.isBlank()) {
             return ResponseEntity.badRequest().body(
-                    Map.of("status", "error", "message", "Invalid query parameters")
+                    Map.of("status", "error", "message", "Query parameter 'q' is required")
             );
         }
 
@@ -67,11 +66,11 @@ public class ProfileController {
 
         if (filters == null) {
             return ResponseEntity.status(422).body(
-                    Map.of("status", "error", "message", "Unable to interpret query")
+                    Map.of("status", "error", "message", "Unable to interpret query: " + q)
             );
         }
 
-        return allProfileServiceImpl.getProfiles(
+        return allProfileService.getProfiles(
                 filters.getGender(),
                 filters.getAgeGroup(),
                 filters.getCountryId(),
