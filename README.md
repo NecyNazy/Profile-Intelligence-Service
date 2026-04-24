@@ -4,13 +4,13 @@ A production-grade demographic intelligence API built for **Insighta Labs**. Thi
 
 ---
 
-## 🚀 Live API
+## Live API
 
 **Base URL:** `profile-intelligence-service-production-7cd5.up.railway.app`
 
 ---
 
-## 🧠 System Overview
+## System Overview
 
 ```
 Client Request
@@ -37,7 +37,7 @@ Spring Boot Controller
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -52,7 +52,7 @@ Spring Boot Controller
 
 ---
 
-## 🗄 Database Schema
+## Database Schema
 
 | Field | Type | Notes |
 |---|---|---|
@@ -69,13 +69,13 @@ Spring Boot Controller
 
 ---
 
-## 🌱 Data Seeding
+## Data Seeding
 
 The database is pre-seeded with **2026 profiles**. Re-running the seed is safe — `ON CONFLICT (name) DO NOTHING` prevents duplicates.
 
 ---
 
-## 📐 Age Group Classification
+## Age Group Classification
 
 | Age Range | Group |
 |---|---|
@@ -86,7 +86,7 @@ The database is pre-seeded with **2026 profiles**. Re-running the seed is safe �
 
 ---
 
-## 📋 API Reference
+## API Reference
 
 ### 1. Get All Profiles
 
@@ -236,7 +236,7 @@ Pagination (`page`, `limit`) applies here too.
 
 ---
 
-## ⚠️ Error Handling
+## Error Handling
 
 All errors follow this structure:
 
@@ -253,7 +253,7 @@ All errors follow this structure:
 
 ---
 
-## 🌐 External APIs
+## External APIs
 
 | API | Endpoint | Data Extracted |
 |---|---|---|
@@ -265,7 +265,7 @@ All three are called **concurrently** via `Mono.zip`, so total latency equals th
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 **1. Clone the repository**
 
@@ -291,7 +291,7 @@ PORT=8080
 
 ---
 
-## 🧪 Testing with Postman
+## Testing with Postman
 
 ```
 # Fetch all
@@ -323,7 +323,7 @@ POST /api/profiles  Body: { "name": "John123" }    → 422
 
 ---
 
-## 🏗 Project Structure
+## Project Structure
 
 ```
 src/
@@ -355,7 +355,7 @@ src/
 
 ---
 
-## 📌 Key Implementation Notes
+## Key Implementation Notes
 
 **Optional filter pattern** — The repository uses `:param IS NULL OR field = :param` in JPQL so one query handles every combination of optional filters without branching.
 
